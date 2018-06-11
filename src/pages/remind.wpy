@@ -1,0 +1,31 @@
+<style lang="less">
+
+</style>
+
+<template>
+  <view class="index">
+    <text>提醒页面</text>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: 'test'
+    }
+    components = {
+
+    }
+    data = {
+    }
+    computed = {
+    }
+    methods = {
+    }
+    events = {
+    }
+    onLoad() {
+    }
+  }
+</script>

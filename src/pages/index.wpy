@@ -1,0 +1,137 @@
+<style lang="less">
+.header {
+  padding: 20rpx;
+  .logo {
+    width: 200rpx;
+    height: 50rpx;
+    margin-right: 50rpx;
+    vertical-align: top;
+  }
+  .time {
+    display: block;
+    float: right;
+    height: 50rpx;
+    font-size: 26rpx;
+    line-height: 50rpx;
+    color: #f5c170;
+  }
+}
+.table {
+  border-bottom: 1rpx solid #ccc;
+}
+.tr {
+  display: flex;
+  width: 100%;
+  height: 120rpx;
+  justify-content: center;
+  align-items: center;
+}
+.td {
+  width:40%;
+  height: 120rpx;
+  line-height: 120rpx;
+  justify-content: center;
+  text-align: center;
+  border-right: 1rpx solid #ccc;
+  .td-child {
+    height: 60rpx;
+    line-height: 60rpx;
+    &:first-child {
+      border-bottom: 1rpx solid #ccc;
+    }
+  }
+}
+.bg-w{
+  background: snow;
+}
+.bg-g{
+  background: #ddd;
+}
+.th {
+  width: 40%;
+  justify-content: center;
+  background: #ddd;
+  color: #333;
+  display: flex;
+  height: 100rpx;
+  align-items: center;
+}
+</style>
+
+<template>
+  <view class="index">
+    <view class="header">
+      <image class="logo" src="../images/logo.png"></image>
+      <text class="time">2018/06/10 05:20:00 开盘</text>
+    </view>
+    <view class="table">
+      <view class="tr bg-w">
+        <view class="th">商品</view>
+        <view class="th">回购</view>
+        <view class="th">销售</view>
+        <view class="th">高/低</view>
+      </view>
+      <block wx:for="{{listData}}" wx:key="{{code}}">
+        <view class="tr bg-g" wx:if="{{index % 2 !== 0}}">
+          <view class="td">{{item.code}}</view>
+          <view class="td">{{item.text}}</view>
+          <view class="td">{{item.type}}</view>
+          <view class="td">
+            <view class="td-child">{{item.type}}</view>
+            <view class="td-child">{{item.type}}</view>
+          </view>
+        </view>
+        <view class="tr" wx:else>
+          <view class="td">{{item.code}}</view>
+          <view class="td">{{item.text}}</view>
+          <view class="td">{{item.type}}</view>
+          <view class="td">
+            <view class="td-child">{{item.type}}</view>
+            <view class="td-child">{{item.type}}</view>
+          </view>
+        </view>
+      </block>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: 'test'
+    }
+    components = {}
+    data = {
+      listData: [{
+        'code': '黄金',
+        'text': '266.22',
+        'type': '266.22'
+      },
+      {
+        'code': '白银',
+        'text': '266.22',
+        'type': '266.22'
+      },
+      {
+        'code': '铂金',
+        'text': '266.22',
+        'type': '266.22'
+      },
+      {
+        'code': '港金',
+        'text': '266.22',
+        'type': '266.22'
+      },
+      {
+        'code': '伦敦金',
+        'text': '266.22',
+        'type': '266.22'
+      }]
+    }
+    computed = {}
+    methods = {}
+    events = {}
+    onLoad() {}
+  }
+</script>
