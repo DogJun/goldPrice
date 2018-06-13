@@ -1,4 +1,5 @@
 <style lang="less">
+@import "../styles/variable.less";
 .header {
   padding: 20rpx;
   .logo {
@@ -13,7 +14,7 @@
     height: 50rpx;
     font-size: 26rpx;
     line-height: 50rpx;
-    color: #f5c170;
+    color: @themeColor;
   }
 }
 .table {
@@ -32,7 +33,10 @@
   line-height: 120rpx;
   justify-content: center;
   text-align: center;
-  border-right: 1rpx solid #ccc;
+  border-right: 1rpx solid @borderColor;
+  &:last-child {
+    border-right: 0;
+  }
   .td-child {
     height: 60rpx;
     line-height: 60rpx;
@@ -42,7 +46,8 @@
   }
 }
 .bg-w{
-  background: snow;
+  background: #ddd;
+  height: 100rpx;
 }
 .bg-g{
   background: #ddd;
@@ -50,7 +55,6 @@
 .th {
   width: 40%;
   justify-content: center;
-  background: #ddd;
   color: #333;
   display: flex;
   height: 100rpx;
@@ -62,7 +66,7 @@
   <view class="index">
     <view class="header">
       <image class="logo" src="../images/logo.png"></image>
-      <text class="time">2018/06/10 05:20:00 开盘</text>
+      <text class="time">{{time}}</text>
     </view>
     <view class="table">
       <view class="tr bg-w">
@@ -103,6 +107,7 @@
     }
     components = {}
     data = {
+      time: '',
       listData: [{
         'code': '黄金',
         'text': '266.22',
@@ -132,6 +137,17 @@
     computed = {}
     methods = {}
     events = {}
-    onLoad() {}
+    onLoad () {
+      let self = this
+      setInterval(function() {
+        let time = new Date()
+        // 程序计时的月从0开始取值后+1
+        let m = time.getMonth() + 1
+        let t = `${time.getFullYear()}/${m.toString().padStart(2, '0')}/${time.getDate().toString().padStart(2, '0')} ${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}:${time.getSeconds().toString().padStart(2, '0')}`
+        console.log(t)
+        self.time = t
+        self.$apply()
+      }, 1000)
+    }
   }
 </script>

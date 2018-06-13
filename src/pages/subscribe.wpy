@@ -1,4 +1,5 @@
 <style lang="less">
+@import "../styles/variable.less";
 .page-subscibe {
   padding: 40rpx;
   text-align: center;
@@ -6,12 +7,16 @@
     margin: 40rpx 0;
     .item {
       padding: 20rpx;
-      border: 1px solid #eee;
+      border: 1rpx solid @borderColor;
       border-bottom: 0;
       &:last-child {
-        border-bottom: 1px solid #eee;
+        border-bottom: 1rpx solid @borderColor;
       }
     }
+  }
+  button {
+    background: @themeColor;
+    color: #fff;
   }
 }
 </style>

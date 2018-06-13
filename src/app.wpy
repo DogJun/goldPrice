@@ -1,12 +1,5 @@
-<style lang="css">
-/* .container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  box-sizing: border-box;
-} */
+<style lang="less">
+@import "./styles/index";
 </style>
 
 <script>
@@ -22,9 +15,9 @@ setStore(store)
 export default class extends wepy.app {
   config = {
     pages: [
-      'pages/subscribe',
       'pages/index',
-      'pages/remind'
+      'pages/remind',
+      'pages/subscribe'
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -34,9 +27,10 @@ export default class extends wepy.app {
     },
     'tabBar': {
       'color': '#999999',
-      'selectedColor': '#ff6a3c',
+      'selectedColor': '#e99f39',
       'backgroundColor': '#ffffff',
       'borderStyle': 'black',
+      'position': 'bottom',
       'list': [{
         'pagePath': 'pages/index',
         'text': '行情'

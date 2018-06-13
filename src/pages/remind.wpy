@@ -1,10 +1,80 @@
 <style lang="less">
-
+@import "../styles/variable.less";
+.page-remind {
+  .types {
+    padding: 20rpx;
+    border-bottom: 1rpx solid @borderColor;
+    button {
+      display: inline-block;
+      margin-right: 20rpx;
+      padding-left: 30px;
+      padding-right: 30px;
+      &.types-item_active {
+        background: @themeColor;
+        color: #020001;
+      }
+    }
+  }
+  .price {
+    padding: 40rpx;
+    border-bottom: 1rpx solid @borderColor;
+    text {
+      display: block;
+      text-align: center;
+    }
+    .price-num {
+      margin-bottom: 20rpx;
+      color: @themeColor;
+      font-size: 60rpx;
+    }
+    .price-desc {
+      font-size: 30rpx;
+    }
+  }
+  .down,
+  .up {
+    padding: 20rpx;
+    border-bottom: 1rpx solid @borderColor;
+    text,
+    input {
+      display: inline-block;
+      height: 50rpx;
+      line-height: 50rpx;
+      vertical-align: top;
+    }
+    text {
+      margin-right: 20rpx;
+    }
+  }
+  .up {
+    margin-bottom: 60rpx;
+  }
+  .submit {
+    width: 80%;
+  }
+}
 </style>
 
 <template>
-  <view class="index">
-    <text>提醒页面</text>
+  <view class="page-remind">
+    <view class="types">
+      <button wx:for="{{types}}" wx:key="index" wx:for-index="index" wx:for-item="item" class="types-item">
+        {{item}}
+      </button>
+    </view>
+    <view class="price">
+      <text class="price-num">266.34</text>
+      <text class="price-desc">实时金价（元/克）</text>
+    </view>
+    <view class="down">
+      <text class="down-desc">跌破(元/克)</text>
+      <input class="down-num" placeholder="请输入跌破金价" />
+    </view>
+    <view class="up">
+      <text class="up-desc">涨超(元/克)</text>
+      <input class="up-num" placeholder="请输入涨超金价" />
+    </view>
+    <button class="submit">保存</button>
   </view>
 </template>
 
@@ -18,7 +88,7 @@
 
     }
     data = {
-      types: []
+      types: ['黄金', '白银', '铂金', '港金', '伦敦金']
     }
     computed = {
     }
