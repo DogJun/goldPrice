@@ -1,31 +1,54 @@
 <style lang="less">
-
+.page-subscibe {
+  padding: 40rpx;
+  text-align: center;
+  .time {
+    margin: 40rpx 0;
+    .item {
+      padding: 20rpx;
+      border: 1px solid #eee;
+      border-bottom: 0;
+      &:last-child {
+        border-bottom: 1px solid #eee;
+      }
+    }
+  }
+}
 </style>
 
 <template>
-  <view class="index">
-    <text>订阅页面</text>
+  <view class="page-subscibe">
+    <text>请选择订阅时间</text>
+    <view class="time">
+      <view wx:for="{{dates}}" wx:key="index" wx:for-index="index" wx:for-item="item" class="item">
+        {{item}}
+      </view>
+    </view>
+    <button>完成</button>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
+  import { getDates } from '../utils/index'
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: 'test'
+      navigationBarTitleText: '订阅'
     }
     components = {
 
     }
     data = {
+      dates: []
+    }
+    onLoad() {
+      this.dates = getDates(7)
     }
     computed = {
     }
     methods = {
     }
     events = {
-    }
-    onLoad() {
     }
   }
 </script>

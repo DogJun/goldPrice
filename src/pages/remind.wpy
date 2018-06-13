@@ -12,12 +12,13 @@
   import wepy from 'wepy'
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: 'test'
+      navigationBarTitleText: '提醒'
     }
     components = {
 
     }
     data = {
+      types: []
     }
     computed = {
     }
