@@ -9,9 +9,19 @@
       padding: 20rpx;
       border: 1rpx solid @borderColor;
       border-bottom: 0;
+      position: relative;
       &:last-child {
         border-bottom: 1rpx solid @borderColor;
       }
+      .icon-check {
+        font-size:22px;
+        position:absolute;
+        right:20px;
+        color: @themeColor;
+      }
+    }
+    .active {
+      background: @themeColorTint;
     }
   }
   button {
@@ -24,10 +34,18 @@
 <template>
   <view class="page-subscibe">
     <text>请选择订阅时间</text>
-    <span class="iconfont icon-check"></span>
     <view class="time">
-      <view wx:for="{{dates}}" wx:key="index" wx:for-index="index" wx:for-item="item" class="item">
-        {{item}}
+      <view wx:for="{{dates}}"
+            wx:key="index"
+            wx:for-index="index"
+            wx:for-item="item"
+            class="item"
+            :class="{ 'active': item.active }"
+            @tap="handleTap({{index}})">
+        {{item.date}}
+        <block wx:if="{{item.active}}">
+          <span class="iconfont icon-check"></span>
+        </block>
       </view>
     </view>
     <button>完成</button>
@@ -53,6 +71,9 @@
     computed = {
     }
     methods = {
+      handleTap (index) {
+        this.dates[index].active = !this.dates[index].active
+      }
     }
     events = {
     }

@@ -15,9 +15,9 @@ setStore(store)
 export default class extends wepy.app {
   config = {
     pages: [
+      'pages/subscribe',
       'pages/index',
-      'pages/remind',
-      'pages/subscribe'
+      'pages/remind'
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -33,15 +33,21 @@ export default class extends wepy.app {
       'position': 'bottom',
       'list': [{
         'pagePath': 'pages/index',
-        'text': '行情'
+        'text': '行情',
+        'iconPath': 'images/hangqing.png',
+        'selectedIconPath': 'images/hangqing_active.png'
       },
       {
         'pagePath': 'pages/subscribe',
-        'text': '订阅'
+        'text': '订阅',
+        'iconPath': 'images/dingyue.png',
+        'selectedIconPath': 'images/dingyue_active.png'
       },
       {
         'pagePath': 'pages/remind',
-        'text': '提醒'
+        'text': '提醒',
+        'iconPath': 'images/tixing.png',
+        'selectedIconPath': 'images/tixing_active.png'
       }]
     }
   }
