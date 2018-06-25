@@ -12,7 +12,7 @@
       margin-bottom:20rpx;
       &.types-item_active {
         background: @themeColor;
-        color: #020001;
+        color: #ffffff;
       }
     }
   }
@@ -61,8 +61,15 @@
 <template>
   <view class="page-remind">
     <view class="types">
-      <button wx:for="{{types}}" wx:key="index" wx:for-index="index" wx:for-item="item" class="types-item">
-        {{item}}
+      <button
+        wx:for="{{types}}"
+        wx:key="index"
+        wx:for-index="index"
+        wx:for-item="item"
+        class="types-item"
+        :class="{'types-item_active': item.active}"
+        @tap="handleChoose({{index}})">
+        {{item.text}}
       </button>
     </view>
     <view class="price">
@@ -71,11 +78,11 @@
     </view>
     <view class="down">
       <text class="down-desc">跌破(元/克)</text>
-      <input class="down-num" placeholder="请输入跌破金价" />
+      <input class="down-num" placeholder="请输入跌破金价" type="digit"/>
     </view>
     <view class="up">
       <text class="up-desc">涨超(元/克)</text>
-      <input class="up-num" placeholder="请输入涨超金价" />
+      <input class="up-num" placeholder="请输入涨超金价" type="digit"/>
     </view>
     <button class="submit">保存</button>
   </view>
@@ -91,11 +98,35 @@
 
     }
     data = {
-      types: ['黄金', '白银', '铂金', '港金', '伦敦金']
+      types: [
+        {
+          'text': '黄金',
+          'active': false
+        },
+        {
+          'text': '白银',
+          'active': false
+        },
+        {
+          'text': '铂金',
+          'active': false
+        },
+        {
+          'text': '港金',
+          'active': false
+        },
+        {
+          'text': '伦敦金',
+          'active': false
+        }
+      ]
     }
     computed = {
     }
     methods = {
+      handleChoose (index) {
+        this.types[index].active = !this.types[index].active
+      }
     }
     events = {
     }

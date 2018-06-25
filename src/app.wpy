@@ -15,9 +15,9 @@ setStore(store)
 export default class extends wepy.app {
   config = {
     pages: [
-      'pages/subscribe',
       'pages/index',
-      'pages/remind'
+      'pages/remind',
+      'pages/subscribe'
     ],
     window: {
       backgroundTextStyle: 'light',
