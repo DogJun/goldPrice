@@ -62,9 +62,40 @@ export default class extends wepy.app {
   }
 
   onLaunch() {
-    this.testAsync()
+    // this.testAsync()
+    wepy.checkSession({
+      success: function () {
+        console.log('session_key 未过期')
+        // session_key 未过期，并且在本生命周期一直有效
+      },
+      fail: function () {
+        console.log('session_key 已经失效')
+        // session_key 已经失效，重新登录获取code
+        wepy.login({
+          success: function (res) {
+            console.log(res)
+          }
+        })
+      }
+    })
+    // this.checkLoginState()
   }
-
+  async checkLoginState () {
+    try {
+      // 微信自己的code 状态
+      let wxLoginState = await wepy.checkSession().then(res => {return true}, res => {return false});
+      console.log(wxLoginState)
+      // let token = wx.getStorageSync('access_token')
+      // if (!wxLoginState || !token) {
+      //   return await this.login();
+      // } else {
+      //   return true;
+      // }
+    } catch (res) {
+      console.log(res)
+      console.log('检查登录状态---checkLoginState');
+    }
+  }
   sleep (s) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
