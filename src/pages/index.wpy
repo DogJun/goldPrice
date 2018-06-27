@@ -107,7 +107,7 @@
   import { addZeros, timeRange } from '../utils/index'
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: 'test'
+      navigationBarTitleText: '行情'
     }
     components = {}
     data = {
@@ -149,7 +149,7 @@
       this.timeId = setInterval(function() {
         let time = new Date()
         let m = time.getMonth() + 1
-        let t = `${time.getFullYear()}/${addZeros(m, 2)}/${addZeros(time.getDate(), 2)} ${addZeros(time.getHours(), 2)}:${addZeros(time.getMinutes(), 2)}:${addZeros(time.getSeconds(), 2)}`
+        let t = `${time.getFullYear()}/${m.toString().padStart(2, '0')}/${time.getDate().toString().padStart(2, '0')} ${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}:${time.getSeconds().toString().padStart(2, '0')}`
         self.time = t
         self.$apply()
       }, 1000)

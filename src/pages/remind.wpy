@@ -5,13 +5,14 @@
     padding: 20rpx;
     border-bottom: 1rpx solid @borderColor;
     button {
-      display: inline-block;
-      margin-right: 20rpx;
-      padding-left: 30px;
-      padding-right: 30px;
+      display:inline-block;
+      margin-right:20rpx;
+      padding-left:35px;
+      padding-right:35px;
+      margin-bottom:20rpx;
       &.types-item_active {
         background: @themeColor;
-        color: #020001;
+        color: #ffffff;
       }
     }
   }
@@ -51,6 +52,8 @@
   }
   .submit {
     width: 80%;
+    background: @themeColor;
+    color: #fff;
   }
 }
 </style>
@@ -58,11 +61,16 @@
 <template>
   <view class="page-remind">
     <view class="types">
-      <block wx:key="index" wx:for="{{types}}">
-        <button class="types-item {{item.class}}" id="{{index}}" @tap="typesTap">
-          {{item.text}}
-        </button>
-      </block>
+      <button
+        wx:for="{{types}}"
+        wx:key="index"
+        wx:for-index="index"
+        wx:for-item="item"
+        class="types-item"
+        :class="{'types-item_active': item.active}"
+        @tap="handleChoose({{index}})">
+        {{item.text}}
+      </button>
     </view>
     <view class="price">
       <text class="price-num">266.34</text>
@@ -70,11 +78,11 @@
     </view>
     <view class="down">
       <text class="down-desc">跌破(元/克)</text>
-      <input class="down-num" placeholder="请输入跌破金价" />
+      <input class="down-num" placeholder="请输入跌破金价" type="digit"/>
     </view>
     <view class="up">
       <text class="up-desc">涨超(元/克)</text>
-      <input class="up-num" placeholder="请输入涨超金价" />
+      <input class="up-num" placeholder="请输入涨超金价" type="digit"/>
     </view>
     <button class="submit">保存</button>
   </view>
@@ -92,6 +100,7 @@
     data = {
       types: [
         {
+<<<<<<< HEAD
           text: '黄金',
           class: ''
         },
@@ -110,14 +119,39 @@
         {
           text: '伦敦金',
           class: ''
+=======
+          'text': '黄金',
+          'active': false
+        },
+        {
+          'text': '白银',
+          'active': false
+        },
+        {
+          'text': '铂金',
+          'active': false
+        },
+        {
+          'text': '港金',
+          'active': false
+        },
+        {
+          'text': '伦敦金',
+          'active': false
+>>>>>>> d675ad1b1befc78c361170067a71c6de12cdd8eb
         }
       ]
     }
     computed = {
     }
     methods = {
+<<<<<<< HEAD
       typesTap (e) {
         this.list[e.target.id].class = this.list[e.target.id].class ? '' : 'types-item_active'
+=======
+      handleChoose (index) {
+        this.types[index].active = !this.types[index].active
+>>>>>>> d675ad1b1befc78c361170067a71c6de12cdd8eb
       }
     }
     events = {

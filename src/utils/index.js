@@ -2,7 +2,7 @@
  * @Author: DogJun
  * @Date: 2018-06-13 19:11:22
  * @Last Modified by: DogJun
- * @Last Modified time: 2018-06-14 10:05:58
+ * @Last Modified time: 2018-06-27 17:48:02
  */
 /**
  *
@@ -14,7 +14,7 @@ export function getDates (num) {
   let current = new Date()
   for (let i = 0; i < num; i++) {
     current.setDate(current.getDate() + 1)
-    arr.push(`${(current.getMonth() + 1)}月${current.getDate()}日`)
+    arr.push({'active': false, 'date': `${(current.getMonth() + 1)}月${current.getDate()}日`})
   }
   return arr
 }
