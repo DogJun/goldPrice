@@ -65,8 +65,9 @@
 <template>
   <view class="index">
     <view class="header">
-      <image class="logo" src="../images/logo.png"></image>
+      <image class="logo" src="../images/logo.png" />
       <text class="time">{{time}}</text>
+      <text class="txt">{{timeRange(OPENSTART, OPENEND) ? '开盘' : '收盘'}}</text>
     </view>
     <view class="table">
       <view class="tr bg-w">
@@ -95,12 +96,15 @@
           </view>
         </view>
       </block>
+      <!-- todo 广告位跳转 -->
     </view>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
+  import { OPENSTART, OPENEND } from '../config/index'
+  import { addZeros, timeRange } from '../utils/index'
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: 'test'
@@ -108,46 +112,50 @@
     components = {}
     data = {
       time: '',
-      listData: [{
+      timeId: null,
+      listData: [
+        {
         'code': '黄金',
         'text': '266.22',
-        'type': '266.22'
-      },
-      {
-        'code': '白银',
-        'text': '266.22',
-        'type': '266.22'
-      },
-      {
-        'code': '铂金',
-        'text': '266.22',
-        'type': '266.22'
-      },
-      {
-        'code': '港金',
-        'text': '266.22',
-        'type': '266.22'
-      },
-      {
-        'code': '伦敦金',
-        'text': '266.22',
-        'type': '266.22'
-      }]
+          'type': '266.22'
+        },
+        {
+          'code': '白银',
+          'text': '266.22',
+          'type': '266.22'
+        },
+        {
+          'code': '铂金',
+          'text': '266.22',
+          'type': '266.22'
+        },
+        {
+          'code': '港金',
+          'text': '266.22',
+          'type': '266.22'
+        },
+        {
+          'code': '伦敦金',
+          'text': '266.22',
+          'type': '266.22'
+        }
+      ]
     }
     computed = {}
     methods = {}
     events = {}
     onLoad () {
       let self = this
-      setInterval(function() {
+      this.timeId = setInterval(function() {
         let time = new Date()
-        // 程序计时的月从0开始取值后+1
         let m = time.getMonth() + 1
-        let t = `${time.getFullYear()}/${m.toString().padStart(2, '0')}/${time.getDate().toString().padStart(2, '0')} ${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}:${time.getSeconds().toString().padStart(2, '0')}`
-        console.log(t)
+        let t = `${time.getFullYear()}/${addZeros(m, 2)}/${addZeros(time.getDate(), 2)} ${addZeros(time.getHours(), 2)}:${addZeros(time.getMinutes(), 2)}:${addZeros(time.getSeconds(), 2)}`
         self.time = t
         self.$apply()
       }, 1000)
+    }
+    onUnload () {
+      this.timeId = null
     }
   }
 </script>
