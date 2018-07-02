@@ -10,6 +10,7 @@
       border: 1rpx solid @borderColor;
       border-bottom: 0;
       position: relative;
+      text-align:center;
       &:last-child {
         border-bottom: 1rpx solid @borderColor;
       }
@@ -24,9 +25,17 @@
       background: @themeColorTint;
     }
   }
-  button {
+  .submit {
     background: @themeColor;
     color: #fff;
+  }
+  /*修改按钮样式，使其能够包裹其他组件*/
+  .btn {
+    border: none;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+    line-height: 1.5;
   }
 }
 </style>
@@ -35,20 +44,24 @@
   <view class="page-subscibe">
     <text>请选择订阅时间</text>
     <view class="time">
-      <view wx:for="{{dates}}"
-            wx:key="index"
-            wx:for-index="index"
-            wx:for-item="item"
-            class="item"
-            :class="{ 'active': item.active }"
-            @tap="handleTap({{index}})">
-        {{item.date}}
-        <block wx:if="{{item.active}}">
-          <span class="iconfont icon-check"></span>
-        </block>
-      </view>
+      <form bindsubmit="formSubmit" report-submit>
+        <view wx:for="{{dates}}"
+              wx:key="index"
+              wx:for-index="index"
+              wx:for-item="item"
+              class="item"
+              :class="{ 'active': item.active }"
+        >
+          <button plain class="btn" form-type="submit" data-type="click" data-index="{{index}}">
+            {{item.date}}
+            <block wx:if="{{item.active}}">
+              <span class="iconfont icon-check"></span>
+            </block>
+          </button>
+        </view>
+      </form>
     </view>
-    <button>完成</button>
+    <button class="submit">完成</button>
   </view>
 </template>
 
@@ -66,12 +79,22 @@
       dates: []
     }
     onLoad() {
+      // 获取未来7天日期
       this.dates = getDates(7)
+      // todo 显示当前订阅日期状态
     }
     computed = {
     }
     methods = {
       handleTap (index) {
+        console.log('111')
+        this.dates[index].active = !this.dates[index].active
+      },
+      formSubmit (e) {
+        let formId = e.detail.formId
+        console.log(formId)
+        let index = e.detail.target.dataset.index
+        console.log(index)
         this.dates[index].active = !this.dates[index].active
       }
     }
