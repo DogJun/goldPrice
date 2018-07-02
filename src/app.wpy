@@ -8,6 +8,7 @@ import 'wepy-async-function'
 
 import { setStore } from 'wepy-redux'
 import configStore from './store'
+import { login } from  '@/request/api'
 
 const store = configStore()
 setStore(store)
@@ -72,8 +73,14 @@ export default class extends wepy.app {
         console.log('session_key 已经失效')
         // session_key 已经失效，重新登录获取code
         wepy.login({
-          success: function (res) {
+          success: async function (res) {
             console.log(res)
+            const json = await login({
+              query: {
+                code: res.code
+              }
+            })
+            console.log(data)
           }
         })
       }

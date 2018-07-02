@@ -5,9 +5,10 @@ export default async(params = {}, url) => {
   let data = params.query || {}
   let res = await wepy.request({
     url: url,
-    method: params.method || 'GET',
+    method: params.method || 'POST',
     data: data,
-    header: { 'Content-Type': 'application/json' },
+    // header: { 'Content-Type': 'application/json' },
+    header: { 'Content-Type': 'application/x-www-form-urlencoded' }
   })
   wepy.hideNavigationBarLoading()
   return res

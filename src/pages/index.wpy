@@ -1,20 +1,35 @@
 <style lang="less">
 @import "../styles/variable.less";
+@import "../styles/mixin.less";
 .header {
   padding: 20rpx;
-  .logo {
-    width: 200rpx;
-    height: 50rpx;
-    margin-right: 50rpx;
-    vertical-align: top;
+  .clearfix();
+  .header-left {
+    .pull-left();
+    .logo {
+      width: 200rpx;
+      height: 50rpx;
+      margin-right: 50rpx;
+      vertical-align: top;
+    }
   }
-  .time {
-    display: block;
-    float: right;
-    height: 50rpx;
-    font-size: 26rpx;
-    line-height: 50rpx;
-    color: @themeColor;
+  .header-right {
+    .pull-right();
+    .time {
+      display: inline-block;
+      height: 50rpx;
+      font-size: 26rpx;
+      line-height: 50rpx;
+      color: @themeColor;
+      margin-right: 20rpx;
+    }
+    .txt {
+      display: inline-block;
+      height: 50rpx;
+      font-size: 26rpx;
+      line-height: 50rpx;
+      color: @themeColor;
+    }
   }
 }
 .table {
@@ -65,9 +80,13 @@
 <template>
   <view class="index">
     <view class="header">
-      <image class="logo" src="../images/logo.png" />
-      <text class="time">{{time}}</text>
-      <text class="txt">{{timeRange(OPENSTART, OPENEND) ? '开盘' : '收盘'}}</text>
+      <view class="header-left">
+        <image class="logo" src="../images/logo.png" />
+      </view>
+      <view class="header-right">
+        <text class="time">{{time}}</text>
+        <text class="txt">{{timeRange(OPENSTART, OPENEND) ? '开盘' : '收盘'}}</text>
+      </view>
     </view>
     <view class="table">
       <view class="tr bg-w">
@@ -78,21 +97,21 @@
       </view>
       <block wx:for="{{listData}}" wx:key="{{code}}">
         <view class="tr bg-g" wx:if="{{index % 2 !== 0}}">
-          <view class="td">{{item.code}}</view>
-          <view class="td">{{item.text}}</view>
           <view class="td">{{item.type}}</view>
+          <view class="td">{{item.buy}}</view>
+          <view class="td">{{item.sell}}</view>
           <view class="td">
-            <view class="td-child">{{item.type}}</view>
-            <view class="td-child">{{item.type}}</view>
+            <view class="td-child">{{item.high}}</view>
+            <view class="td-child">{{item.low}}</view>
           </view>
         </view>
         <view class="tr" wx:else>
-          <view class="td">{{item.code}}</view>
-          <view class="td">{{item.text}}</view>
           <view class="td">{{item.type}}</view>
+          <view class="td">{{item.buy}}</view>
+          <view class="td">{{item.sell}}</view>
           <view class="td">
-            <view class="td-child">{{item.type}}</view>
-            <view class="td-child">{{item.type}}</view>
+            <view class="td-child">{{item.high}}</view>
+            <view class="td-child">{{item.low}}</view>
           </view>
         </view>
       </block>
@@ -105,6 +124,7 @@
   import wepy from 'wepy'
   import { OPENSTART, OPENEND } from '../config/index'
   import { addZeros, timeRange } from '../utils/index'
+  import { getAd, getLatest } from '@/request/api'
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: '行情'
@@ -113,39 +133,14 @@
     data = {
       time: '',
       timeId: null,
-      listData: [
-        {
-        'code': '黄金',
-        'text': '266.22',
-          'type': '266.22'
-        },
-        {
-          'code': '白银',
-          'text': '266.22',
-          'type': '266.22'
-        },
-        {
-          'code': '铂金',
-          'text': '266.22',
-          'type': '266.22'
-        },
-        {
-          'code': '港金',
-          'text': '266.22',
-          'type': '266.22'
-        },
-        {
-          'code': '伦敦金',
-          'text': '266.22',
-          'type': '266.22'
-        }
-      ]
+      listData: []
     }
     computed = {}
     methods = {}
     events = {}
     onLoad () {
       let self = this
+      // 显示定时器
       this.timeId = setInterval(function() {
         let time = new Date()
         let m = time.getMonth() + 1
@@ -153,6 +148,91 @@
         self.time = t
         self.$apply()
       }, 1000)
+      this._getAd()
+      // 建立websocket连接
+      wx.connectSocket({
+        url: 'wss://jewelry.timovips.com/webSocketServer1s',
+        data:{
+        },
+        header:{
+          'content-type': 'application/x-www-form-urlencoded'
+        },
+        method: "POST",
+        success: async function (res) {
+          // getLatest
+          console.log(res)
+          // await getLatest({
+          //   query: {
+          //   },
+          //   type: 'GET'
+          // })
+        },
+        fail: function (err) {
+          console.log(err)
+        }
+      })
+      wx.onSocketOpen(function (res) {
+        console.log('WebSocket连接已打开！')
+      })
+      wx.onSocketError(async function (res) {
+        console.log('WebSocket连接打开失败，请检查！')
+        const json = await getLatest({
+          query: {
+          },
+          method: 'GET'
+        })
+        self.handleData(json)
+      })
+    }
+    async _getAd () {
+      const json = await getAd({
+        query: {
+          type: '1'
+        }
+      })
+      console.log(json)
+    }
+    handleData (data) {
+      console.log(data)
+      let result = [
+        {
+          'type': '黄金',
+          'buy': data.goldBuy,
+          'sale': data.goldSale,
+          'high': data.goldHigh,
+          'low': data.goldLow
+        },
+        {
+          'type': '白银',
+          'buy': data.byGoldBuy,
+          'sale': data.byGoldSale,
+          'high': data.byGoldHigh,
+          'low': data.byGoldLow
+        },
+        {
+          'type': '铂金',
+          'buy': data.bjGoldBuy,
+          'sale': data.bjGoldSale,
+          'high': data.bjGoldHigh,
+          'low': data.bjGoldLow
+        },
+        {
+          'type': '港金',
+          'buy': data.hkGoldBuy,
+          'sale': data.hkGoldSale,
+          'high': data.hkGoldHigh,
+          'low': data.hkGoldLow
+        },
+        {
+          'type': '伦敦金',
+          'buy': data.londonGoldBuy,
+          'sale': data.londonGoldSale,
+          'high': data.londonGoldHigh,
+          'low': data.londonGoldLow
+        }
+      ]
+      self.listData = result
+
     }
     onUnload () {
       this.timeId = null

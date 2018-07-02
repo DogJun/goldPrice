@@ -100,26 +100,6 @@
     data = {
       types: [
         {
-<<<<<<< HEAD
-          text: '黄金',
-          class: ''
-        },
-        {
-          text: '白银',
-          class: ''
-        },
-        {
-          text: '铂金',
-          class: ''
-        },
-        {
-          text: '港金',
-          class: ''
-        },
-        {
-          text: '伦敦金',
-          class: ''
-=======
           'text': '黄金',
           'active': false
         },
@@ -138,20 +118,14 @@
         {
           'text': '伦敦金',
           'active': false
->>>>>>> d675ad1b1befc78c361170067a71c6de12cdd8eb
         }
       ]
     }
     computed = {
     }
     methods = {
-<<<<<<< HEAD
-      typesTap (e) {
-        this.list[e.target.id].class = this.list[e.target.id].class ? '' : 'types-item_active'
-=======
       handleChoose (index) {
         this.types[index].active = !this.types[index].active
->>>>>>> d675ad1b1befc78c361170067a71c6de12cdd8eb
       }
     }
     events = {
