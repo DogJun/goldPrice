@@ -65,7 +65,7 @@ export default class extends wepy.app {
 
   onLaunch() {
     // this.testAsync()
-    wepy.checkSession({
+    wx.checkSession({
       success: function () {
         console.log('session_key 未过期')
         // session_key 未过期，并且在本生命周期一直有效
@@ -73,15 +73,22 @@ export default class extends wepy.app {
       fail: function () {
         console.log('session_key 已经失效')
         // session_key 已经失效，重新登录获取code
-        wepy.login({
-          success: async function (res) {
-            console.log(res)
-            const json = await login({
-              query: {
-                code: res.code
+        wx.login({
+          success: async function (data) {
+            console.log(data)
+            // const json = await login({
+            //   query: {
+            //     code: res.code
+            //   }
+            // })
+            login({code: data.code}).then(res => {
+              console.log(res)
+              try {
+                wx.setStorageSync('key', res.data.data.threeSessionKey)
+              } catch (e) {
+                console.log(e)
               }
             })
-            console.log(data)
           }
         })
       }
