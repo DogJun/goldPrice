@@ -1,15 +1,43 @@
 import wepy from 'wepy'
 
-export default async(params = {}, url) => {
-  wepy.showNavigationBarLoading()
-  let data = params.query || {}
-  let res = await wepy.request({
-    url: url,
-    method: params.method || 'POST',
-    data: data,
-    // header: { 'Content-Type': 'application/json' },
-    header: { 'Content-Type': 'application/x-www-form-urlencoded' }
+async function wxRequest (options = {}) {
+  // options.url = config.paths.api(options.url)
+
+  return wepy.request({
+    ...options
+  }).then((res) => {
+    console.log(res)
+    return res
+  }).catch((e) => {
+    console.log(e)
+    return Promise.reject(e)
+    // wepy.showModal(JSON.stringify(e.message))
   })
-  wepy.hideNavigationBarLoading()
-  return res
 }
+
+function get (url, data = {}, options = {}) {
+  return wxRequest({
+    url,
+    data,
+    ...options,
+    method: 'GET'
+  })
+}
+
+function post (url, data = {}, options = {}) {
+  options.header = options.header || {}
+  options.header['content-type'] = 'application/x-www-form-urlencoded'
+
+  return wxRequest({
+    url,
+    data,
+    ...options,
+    method: 'POST'
+  })
+}
+
+wxRequest.get = get
+wxRequest.post = post
+
+export default wxRequest
+

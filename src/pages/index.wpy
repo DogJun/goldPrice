@@ -99,7 +99,7 @@
         <view class="tr bg-g" wx:if="{{index % 2 !== 0}}">
           <view class="td">{{item.type}}</view>
           <view class="td">{{item.buy}}</view>
-          <view class="td">{{item.sell}}</view>
+          <view class="td">{{item.sale}}</view>
           <view class="td">
             <view class="td-child">{{item.high}}</view>
             <view class="td-child">{{item.low}}</view>
@@ -108,7 +108,7 @@
         <view class="tr" wx:else>
           <view class="td">{{item.type}}</view>
           <view class="td">{{item.buy}}</view>
-          <view class="td">{{item.sell}}</view>
+          <view class="td">{{item.sale}}</view>
           <view class="td">
             <view class="td-child">{{item.high}}</view>
             <view class="td-child">{{item.low}}</view>
@@ -116,6 +116,14 @@
         </view>
       </block>
       <!-- todo 广告位跳转 -->
+    </view>
+    <view class="ad">
+      <!-- <navigator open-type="navigate" target="miniProgram" app-id="wx809ebeea11a3a09a" version="develop">
+        跳转
+      </navigator> -->
+      <navigator target="miniProgram" open-type="navigate" app-id="wx809ebeea11a3a09a" path="" extra-data="" version="develop">
+        <image style="width: 100%; background-color: #eeeeee;" mode="aspectFit" src="http://via.placeholder.com/1200x400" bindTap="jump"></image>
+      </navigator>
     </view>
   </view>
 </template>
@@ -174,21 +182,22 @@
       wx.onSocketOpen(function (res) {
         console.log('WebSocket连接已打开！')
       })
-      wx.onSocketError(async function (res) {
+      wx.onSocketError(function (err) {
         console.log('WebSocket连接打开失败，请检查！')
-        const json = await getLatest({
-          query: {
-          },
-          method: 'GET'
+        getLatest().then(res => {
+          console.log(res)
+          self.handleData(res.data.data)
         })
-        self.handleData(json)
+        // if (res.code === 0) {
+        //
+        // } else {
+        //   console.log(res.msg)
+        // }
       })
     }
-    async _getAd () {
-      const json = await getAd({
-        query: {
-          type: '1'
-        }
+    _getAd () {
+      const json = getAd({
+        type: '1'
       })
       console.log(json)
     }
@@ -231,7 +240,9 @@
           'low': data.londonGoldLow
         }
       ]
-      self.listData = result
+      this.listData = result
+    }
+    jump () {
 
     }
     onUnload () {
