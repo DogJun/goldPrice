@@ -158,7 +158,7 @@
       this._getAd()
       // 建立websocket连接
       wx.connectSocket({
-        url: 'wss://jewelry.timovips.com/webSocketServer1s',
+        url: 'wss://jewelry.timovips.com/webSocketServer',
         data:{
         },
         header:{

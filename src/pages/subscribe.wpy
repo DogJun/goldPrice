@@ -68,6 +68,7 @@
 <script>
   import wepy from 'wepy'
   import { getDates } from '../utils/index'
+  import { getSubscribe } from '@/request/api'
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: '订阅'
@@ -79,6 +80,7 @@
       dates: []
     }
     onLoad() {
+      this._getSubscribe()
       // 获取未来7天日期
       this.dates = getDates(7)
       // todo 显示当前订阅日期状态
@@ -97,6 +99,12 @@
         console.log(index)
         this.dates[index].active = !this.dates[index].active
       }
+    }
+    _getSubscribe () {
+      const thirdSessionKey = wx.getStorageSync('key')
+      getSubscribe({thirdSessionKey: thirdSessionKey}).then(res => {
+        console.log(res)
+      })
     }
     events = {
     }
