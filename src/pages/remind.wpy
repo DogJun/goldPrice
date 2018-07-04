@@ -61,16 +61,20 @@
 <template>
   <view class="page-remind">
     <view class="types">
-      <button
-        wx:for="{{types}}"
-        wx:key="index"
-        wx:for-index="index"
-        wx:for-item="item"
-        class="types-item"
-        :class="{'types-item_active': item.active}"
-        @tap="handleChoose({{index}})">
-        {{item.text}}
-      </button>
+      <form bindsubmit="formSubmit" report-submit>
+        <button
+          wx:for="{{types}}"
+          wx:key="index"
+          wx:for-index="index"
+          wx:for-item="item"
+          class="types-item"
+          :class="{'types-item_active': item.active}"
+          form-type="submit"
+          data-index="{{index}}"
+        >
+          {{item.text}}
+        </button>
+      </form>
     </view>
     <view class="price">
       <text class="price-num">266.34</text>
@@ -124,6 +128,14 @@
     computed = {
     }
     methods = {
+      formSubmit (e) {
+        let formId = e.detail.formId
+        console.log(formId)
+        let index = e.detail.target.dataset.index
+        console.log(index)
+        this.types[index].active = !this.types[index].active
+        this.types[index].pushCode = formId
+      },
       handleChoose (index) {
         this.types[index].active = !this.types[index].active
       }

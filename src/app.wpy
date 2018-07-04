@@ -90,8 +90,9 @@ export default class extends wepy.app {
     try {
       // 微信自己的code 状态
       let wxLoginState = await wepy.checkSession().then(res => {return true}, res => {return false});
-      console.log(wxLoginState)
+      console.log('微信检查是否过期：', wxLoginState)
       let threeSessionKey = wx.getStorageSync('threeSessionKey')
+      console.log('threeSessionKey', threeSessionKey)
       if (!wxLoginState || !threeSessionKey) {
         return await this.login()
       } else {

@@ -61,14 +61,17 @@
         </view>
       </form>
     </view>
-    <button class="submit">完成</button>
+    <button class="submit" @tap="submit">完成</button>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
   import { getDates } from '../utils/index'
-  import { getSubscribe } from '@/request/api'
+  import { getSubscribe, saveSubscribe } from '@/request/api'
+  import tip from '@/utils/tip'
+
+  const thirdSessionKey = wx.getStorageSync('key')
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: '订阅'
@@ -88,20 +91,38 @@
     computed = {
     }
     methods = {
-      handleTap (index) {
-        console.log('111')
-        this.dates[index].active = !this.dates[index].active
-      },
       formSubmit (e) {
         let formId = e.detail.formId
         console.log(formId)
         let index = e.detail.target.dataset.index
         console.log(index)
         this.dates[index].active = !this.dates[index].active
+        this.dates[index].pushCode = formId
+      },
+      submit () {
+        let result = this.dates.filter(v => v.active === true)
+        console.log(result)
+        let list = []
+        for (let i = 0; i < result.length; i++) {
+          list[i] = {
+            pushcode: result[i].pushCode,
+            subtime: result[i].time
+          }
+        }
+        console.log(list)
+        saveSubscribe({
+          thirdSessionKey,
+          list: JSON.stringify(list)
+        }).then(res => {
+          if (res.code === 0) {
+            console.log(res)
+          } else {
+            tip.error(res.msg)
+          }
+        })
       }
     }
     _getSubscribe () {
-      const thirdSessionKey = wx.getStorageSync('key')
       getSubscribe({thirdSessionKey: thirdSessionKey}).then(res => {
         console.log(res)
       })

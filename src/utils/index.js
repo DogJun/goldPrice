@@ -2,7 +2,7 @@
  * @Author: DogJun
  * @Date: 2018-06-13 19:11:22
  * @Last Modified by: DogJun
- * @Last Modified time: 2018-07-02 16:25:29
+ * @Last Modified time: 2018-07-04 21:27:06
  */
 /**
  *
@@ -14,7 +14,9 @@ export function getDates (num) {
   let current = new Date()
   for (let i = 0; i < num; i++) {
     current.setDate(current.getDate() + 1)
-    arr.push({'active': false, 'date': `${(current.getMonth() + 1)}月${current.getDate()}日`})
+    let m = current.getMonth() + 1
+    let t = `${current.getFullYear()}-${m.toString().padStart(2, '0')}-${current.getDate().toString().padStart(2, '0')}`
+    arr.push({'active': false, 'date': `${(current.getMonth() + 1)}月${current.getDate()}日`, 'time': t})
   }
   return arr
 }
