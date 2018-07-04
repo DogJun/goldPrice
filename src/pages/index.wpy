@@ -34,6 +34,7 @@
 }
 .table {
   border-bottom: 1rpx solid #ccc;
+  margin-bottom: 20rpx;
 }
 .tr {
   display: flex;
@@ -74,6 +75,9 @@
   display: flex;
   height: 100rpx;
   align-items: center;
+}
+.ad-img {
+  width: 100%;
 }
 </style>
 
@@ -119,7 +123,7 @@
     </view>
     <view class="ad" wx:if="{{adUrl}}">
       <navigator target="miniProgram" open-type="navigate" app-id="wx809ebeea11a3a09a" path="" extra-data="" version="develop">
-        <image style="width: 100%; background-color: #eeeeee;" mode="aspectFit" src="{{adUrl}}"></image>
+        <image class="ad-img" mode="widthFix" src="{{adUrl}}"></image>
       </navigator>
     </view>
   </view>
@@ -129,7 +133,7 @@
   import wepy from 'wepy'
   import { OPENSTART, OPENEND } from '../config/index'
   import { addZeros, timeRange } from '../utils/index'
-  import { getAd, getLatest } from '@/request/api'
+  import { getAd, getLatest, imgUrl } from '@/request/api'
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: '行情'
@@ -146,7 +150,7 @@
     events = {}
     onLoad () {
       let self = this
-      self.toLogin()
+      // self.toLogin()
       // 显示定时器
       this.timeId = setInterval(function() {
         let time = new Date()
@@ -185,7 +189,7 @@
         console.log('WebSocket连接打开失败，请检查！')
         getLatest().then(res => {
           console.log('getLatest', res)
-          self.handleData(res.data.data)
+          self.handleData(res.data)
         })
         // if (res.code === 0) {
         //
@@ -194,13 +198,12 @@
         // }
       })
     }
-    async toLogin () {
-      //检查小程序登录,查看上文中的checkLoginState,如果登录状态失效，那么重新掉起login 方法登录
-      await this.$parent.checkLoginState()
-    }
     _getAd () {
       getAd({type: '1'}).then(res => {
-        console.log('getAd', res.data.imgurl[0].fileUrl)
+        if (res.code === 0 && res.data) {
+          const adUrl = imgUrl + JSON.parse(res.data.imgurl)[0].fileUrl
+          this.adUrl = adUrl
+        }
       })
     }
     handleData (data) {

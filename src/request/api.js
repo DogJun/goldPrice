@@ -1,7 +1,7 @@
 import request from './wxRequest'
 // const baseUrl = wepy.$appConfig.baseUrl
 const baseUrl = 'https://jewelry.timovips.com/yzjj/api'
-
+export const imgUrl = 'https://jewelry.timovips.com'
 // login
 export const login = (data = {}, options = {}) => request.post('https://jewelry.timovips.com/wechat/user/login', data, options)
 // 获取广告位信息

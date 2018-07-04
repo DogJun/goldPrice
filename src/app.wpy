@@ -63,6 +63,8 @@ export default class extends wepy.app {
   }
 
   onLaunch() {
+    //检查小程序登录,查看上文中的checkLoginState,如果登录状态失效，那么重新掉起login 方法登录
+    this.checkLoginState()
     // wx.checkSession({
     //   success: function () {
     //     console.log('session_key 未过期')
@@ -89,8 +91,8 @@ export default class extends wepy.app {
       // 微信自己的code 状态
       let wxLoginState = await wepy.checkSession().then(res => {return true}, res => {return false});
       console.log(wxLoginState)
-      // let threeSessionKey = wx.getStorageSync('threeSessionKey')
-      if (!wxLoginState) {
+      let threeSessionKey = wx.getStorageSync('threeSessionKey')
+      if (!wxLoginState || !threeSessionKey) {
         return await this.login()
       } else {
         return true
@@ -108,7 +110,7 @@ export default class extends wepy.app {
       console.log(loginData)
       login(loginData).then(res => {
         console.log(res)
-        // wepy.setStorageSync('threeSessionKey', res.threeSessionKey)
+        wepy.setStorageSync('threeSessionKey', res.data.threeSessionKey)
       }).catch(err => {
         console.log(err)
       })
