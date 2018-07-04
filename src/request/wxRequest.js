@@ -6,8 +6,7 @@ async function wxRequest (options = {}) {
   return wepy.request({
     ...options
   }).then((res) => {
-    console.log(res)
-    return res
+    return res.data
   }).catch((e) => {
     console.log(e)
     return Promise.reject(e)

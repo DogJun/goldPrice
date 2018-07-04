@@ -117,12 +117,9 @@
       </block>
       <!-- todo 广告位跳转 -->
     </view>
-    <view class="ad">
-      <!-- <navigator open-type="navigate" target="miniProgram" app-id="wx809ebeea11a3a09a" version="develop">
-        跳转
-      </navigator> -->
+    <view class="ad" wx:if="{{adUrl}}">
       <navigator target="miniProgram" open-type="navigate" app-id="wx809ebeea11a3a09a" path="" extra-data="" version="develop">
-        <image style="width: 100%; background-color: #eeeeee;" mode="aspectFit" src="http://via.placeholder.com/1200x400" bindTap="jump"></image>
+        <image style="width: 100%; background-color: #eeeeee;" mode="aspectFit" src="{{adUrl}}"></image>
       </navigator>
     </view>
   </view>
@@ -141,13 +138,15 @@
     data = {
       time: '',
       timeId: null,
-      listData: []
+      listData: [],
+      adUrl: ''
     }
     computed = {}
     methods = {}
     events = {}
     onLoad () {
       let self = this
+      self.toLogin()
       // 显示定时器
       this.timeId = setInterval(function() {
         let time = new Date()
@@ -185,7 +184,7 @@
       wx.onSocketError(function (err) {
         console.log('WebSocket连接打开失败，请检查！')
         getLatest().then(res => {
-          console.log(res)
+          console.log('getLatest', res)
           self.handleData(res.data.data)
         })
         // if (res.code === 0) {
@@ -195,11 +194,14 @@
         // }
       })
     }
+    async toLogin () {
+      //检查小程序登录,查看上文中的checkLoginState,如果登录状态失效，那么重新掉起login 方法登录
+      await this.$parent.checkLoginState()
+    }
     _getAd () {
-      const json = getAd({
-        type: '1'
+      getAd({type: '1'}).then(res => {
+        console.log('getAd', res.data.imgurl[0].fileUrl)
       })
-      console.log(json)
     }
     handleData (data) {
       console.log(data)
@@ -241,9 +243,6 @@
         }
       ]
       this.listData = result
-    }
-    jump () {
-
     }
     onUnload () {
       this.timeId = null
