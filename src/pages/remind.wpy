@@ -39,11 +39,13 @@
     text,
     input {
       display: inline-block;
+      // width: 350rpx;
       height: 50rpx;
       line-height: 50rpx;
       vertical-align: top;
     }
     text {
+      // width: 200rpx;
       margin-right: 20rpx;
     }
   }
@@ -55,13 +57,21 @@
     background: @themeColor;
     color: #fff;
   }
+  /*修改按钮样式，使其能够包裹其他组件*/
+  .btn {
+    border:none;
+    text-align:left;
+    padding:0;
+    margin:0;
+    line-height:1.5;
+  }
 }
 </style>
 
 <template>
   <view class="page-remind">
     <view class="types">
-      <form bindsubmit="formSubmit" report-submit>
+      <!-- <form bindsubmit="formSubmit" report-submit> -->
         <button
           wx:for="{{types}}"
           wx:key="index"
@@ -69,31 +79,40 @@
           wx:for-item="item"
           class="types-item"
           :class="{'types-item_active': item.active}"
-          form-type="submit"
-          data-index="{{index}}"
+          @tap="handleChoose({{index}})"
         >
           {{item.text}}
         </button>
-      </form>
+      <!-- </form> -->
     </view>
     <view class="price">
       <text class="price-num">266.34</text>
       <text class="price-desc">实时金价（元/克）</text>
     </view>
-    <view class="down">
-      <text class="down-desc">跌破(元/克)</text>
-      <input class="down-num" placeholder="请输入跌破金价" type="digit"/>
-    </view>
-    <view class="up">
-      <text class="up-desc">涨超(元/克)</text>
-      <input class="up-num" placeholder="请输入涨超金价" type="digit"/>
-    </view>
-    <button class="submit">保存</button>
+    <form bindsubmit="formSubmit" report-submit>
+      <button plain class="btn" form-type="submit" data-type="down">
+        <view class="down">
+          <text class="down-desc">跌破(元/克)</text>
+          <input class="down-num" placeholder="请输入跌破金价" type="digit" value="{{down}}" @input="handleDownInput"/>
+          <!-- <switch databindchange="switch2Change" color="rgba(233, 159, 57, 1)"/> -->
+        </view>
+      </button>
+      <button plain class="btn" form-type="submit" data-type="up">
+        <view class="up">
+          <text class="up-desc">涨超(元/克)</text>
+          <input class="up-num" placeholder="请输入涨超金价" type="digit" value="{{up}}" @input="handleUpInput"/>
+        </view>
+      </button>
+    </form>
+    <button class="submit" @tap="submit">保存</button>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
+  import { saveRemind } from '@/request/api'
+
+  const thirdSessionKey = wx.getStorageSync('threeSessionKey')
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: '提醒'
@@ -102,42 +121,148 @@
 
     }
     data = {
+      up: '',
+      down: '',
+      currentIndex: 0,
       types: [
         {
           'text': '黄金',
-          'active': false
+          'sign': 'gold',
+          'active': true,
+          'up': {
+            'price': '',
+            'pushcode': ''
+          },
+          'down': {
+            'price': '',
+            'pushcode': ''
+          }
         },
         {
           'text': '白银',
-          'active': false
+          'sign': 'byGold',
+          'active': false,
+          'up': {
+            'price': '',
+            'pushcode': ''
+          },
+          'down': {
+            'price': '',
+            'pushcode': ''
+          }
         },
         {
           'text': '铂金',
-          'active': false
+          'sign': 'bjGold',
+          'active': false,
+          'up': {
+            'price': '',
+            'pushcode': ''
+          },
+          'down': {
+            'price': '',
+            'pushcode': ''
+          }
         },
         {
           'text': '港金',
-          'active': false
+          'sign': 'hkGold',
+          'active': false,
+          'up': {
+            'price': '',
+            'pushcode': ''
+          },
+          'down': {
+            'price': '',
+            'pushcode': ''
+          }
         },
         {
           'text': '伦敦金',
-          'active': false
+          'sign': 'londonGold',
+          'active': false,
+          'up': {
+            'price': '',
+            'pushcode': ''
+          },
+          'down': {
+            'price': '',
+            'pushcode': ''
+          }
         }
       ]
     }
     computed = {
     }
     methods = {
-      formSubmit (e) {
-        let formId = e.detail.formId
+      formSubmit: function(e) {
+        let formId = e.detail.formId;
         console.log(formId)
-        let index = e.detail.target.dataset.index
-        console.log(index)
-        this.types[index].active = !this.types[index].active
-        this.types[index].pushCode = formId
+        console.log(e.detail.target)
+        let type = e.detail.target.dataset.type
+        if (type === 'up') {
+          this.types[this.currentIndex].up.pushcode = formId
+        } else if (type === 'down'){
+          this.types[this.currentIndex].down.pushcode = formId
+        }
+        // this.dealFormIds(formId); //处理保存推送码
+        // let type = e.detail.target.dataset.type;
+        //根据type的值来执行相应的点击事件
+        //...
+      },
+      handleDownInput (e) {
+        console.log(e.detail.value)
+        this.down = e.detail.value
+        this.types[this.currentIndex].down.price = e.detail.value
+      },
+      handleUpInput (e) {
+        console.log(e.detail.value)
+        this.up = e.detail.value
+        this.types[this.currentIndex].up.price = e.detail.value
       },
       handleChoose (index) {
-        this.types[index].active = !this.types[index].active
+        // 清除所有高亮
+        for (let i = 0; i < this.types.length; i++) {
+          this.types[i].active = false
+        }
+        // 高亮
+        this.types[index].active = true
+        // 显示对应的涨超和跌破
+        console.log(this.types[index].up)
+        this.up = this.types[index].up.price
+        this.down = this.types[index].down.price
+        // 更改当前页面索引
+        this.currentIndex = index
+        this.$apply()
+      },
+      submit () {
+        console.log('submit')
+        let list = []
+        this.types.forEach((item, index) => {
+          if (item.up.price) {
+            list.push({
+              'pushcode': item.up.pushcode,
+              'price': item.up.price,
+              'change': '1',
+              'type': item.sign
+            })
+          }
+          if (item.down.price) {
+            list.push({
+              'pushcode': item.down.pushcode,
+              'price': item.down.price,
+              'change': '-1',
+              'type': item.sign
+            })
+          }
+        })
+        console.log(list)
+        saveRemind({
+          thirdSessionKey,
+          list: JSON.stringify(list)
+        }).then((res) => {
+          console.log(res)
+        })
       }
     }
     events = {

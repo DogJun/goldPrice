@@ -14,3 +14,5 @@ export const saveSubscribe = (data = {}, options = {}) => request.post(baseUrl +
 export const getLatest = (data = {}, options = {}) => request.get(baseUrl + '/getLatest', data, options)
 // 获取贵金属提醒
 export const getRemind = (data = {}, options = {}) => request.post(baseUrl + '/getRemind', data, options)
+// 保存贵金属提醒
+export const saveRemind = (data = {}, options = {}) => request.post(baseUrl + '/saveRemind', data, options)
