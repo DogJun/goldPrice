@@ -71,7 +71,7 @@
   import { getSubscribe, saveSubscribe } from '@/request/api'
   import tip from '@/utils/tip'
 
-  const thirdSessionKey = wx.getStorageSync('key')
+  const thirdSessionKey = wx.getStorageSync('threeSessionKey')
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: '订阅'
@@ -109,7 +109,8 @@
             subtime: result[i].time
           }
         }
-        console.log(list)
+        console.log('thirdSessionKey', thirdSessionKey)
+        console.log('list', list)
         saveSubscribe({
           thirdSessionKey,
           list: JSON.stringify(list)

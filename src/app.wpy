@@ -110,7 +110,7 @@ export default class extends wepy.app {
       let loginData = { code: code }
       console.log(loginData)
       login(loginData).then(res => {
-        console.log(res)
+        console.log('登陆后返回的数据', res)
         wepy.setStorageSync('threeSessionKey', res.data.threeSessionKey)
       }).catch(err => {
         console.log(err)
