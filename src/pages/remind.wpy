@@ -261,7 +261,11 @@
           thirdSessionKey,
           list: JSON.stringify(list)
         }).then((res) => {
-          console.log(res)
+          if (res.code === 0) {
+            console.log(res)
+          } else {
+            tip.error(res.msg)
+          }
         })
       }
     }
