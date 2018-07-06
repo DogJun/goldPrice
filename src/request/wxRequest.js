@@ -1,14 +1,16 @@
 import wepy from 'wepy'
-
+import tip from '@/utils/tip'
 async function wxRequest (options = {}) {
   // options.url = config.paths.api(options.url)
-
+  tip.loading()
   return wepy.request({
     ...options
   }).then((res) => {
+    tip.loaded()
     return res.data
   }).catch((e) => {
     console.log(e)
+    tip.loaded()
     return Promise.reject(e)
     // wepy.showModal(JSON.stringify(e.message))
   })

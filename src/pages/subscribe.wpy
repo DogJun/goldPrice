@@ -112,10 +112,11 @@
         console.log('thirdSessionKey', thirdSessionKey)
         console.log('list', list)
         saveSubscribe({
-          thirdSessionKey,
+          thirdSessionKey: wx.getStorageSync('threeSessionKey'),
           list: JSON.stringify(list)
         }).then(res => {
           if (res.code === 0) {
+            tip.success('保存成功')
             console.log(res)
           } else {
             tip.error(res.msg)
@@ -124,7 +125,7 @@
       }
     }
     _getSubscribe () {
-      getSubscribe({thirdSessionKey: thirdSessionKey}).then(res => {
+      getSubscribe({thirdSessionKey: wx.getStorageSync('threeSessionKey')}).then(res => {
         console.log(res)
       })
     }

@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
-import counter from './counter'
+import getPrice from './getPrice'
 
 export default combineReducers({
-  counter
+  getPrice
 })

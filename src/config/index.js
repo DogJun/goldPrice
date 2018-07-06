@@ -1,2 +1,2 @@
-export const OPENSTART = '10:00'
-export const OPENEND = '2:00'
+export const OPENSTART = '02:00'
+export const OPENEND = '10:00'
