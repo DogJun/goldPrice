@@ -89,7 +89,7 @@
       </view>
       <view class="header-right">
         <text class="time">{{time}}</text>
-        <text class="txt">{{timeRange(OPENSTART, OPENEND) ? '开盘' : '收盘'}}</text>
+        <text class="txt">{{timeRange(OPENSTART, OPENEND) ? '收盘' : '开盘'}}</text>
       </view>
     </view>
     <view class="table">
@@ -122,7 +122,7 @@
       <!-- todo 广告位跳转 -->
     </view>
     <view class="ad" wx:if="{{adUrl}}">
-      <navigator target="miniProgram" open-type="navigate" app-id="wx809ebeea11a3a09a" path="" extra-data="" version="develop">
+      <navigator target="miniProgram" open-type="navigate" app-id="wx809ebeea11a3a09a" path="" extra-data="" version="release">
         <image class="ad-img" mode="widthFix" src="{{adUrl}}"></image>
       </navigator>
     </view>
@@ -134,6 +134,17 @@
   import { OPENSTART, OPENEND } from '../config/index'
   import { addZeros, timeRange } from '../utils/index'
   import { getAd, getLatest, imgUrl } from '@/request/api'
+  import tip from '@/utils/tip'
+  import { connect } from 'wepy-redux'
+  import * as actions from '@/store/actions/getPrice'
+
+  @connect({
+    priceList (state) {
+      return state.getPrice.priceList
+    }
+  }, {
+    ...actions
+  })
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: '行情'
@@ -150,6 +161,7 @@
     events = {}
     onLoad () {
       let self = this
+      console.log(timeRange(OPENSTART, OPENEND))
       // self.toLogin()
       // 显示定时器
       this.timeId = setInterval(function() {
@@ -160,49 +172,49 @@
         self.$apply()
       }, 1000)
       this._getAd()
+      this.methods.getPrice().then(res => {
+        this.handleData(this.priceList)
+      })
       // 建立websocket连接
-      wx.connectSocket({
-        url: 'wss://jewelry.timovips.com/webSocketServer',
-        data:{
-        },
-        header:{
-          'content-type': 'application/x-www-form-urlencoded'
-        },
-        method: "POST",
-        success: async function (res) {
-          // getLatest
-          console.log(res)
-          // await getLatest({
-          //   query: {
-          //   },
-          //   type: 'GET'
-          // })
-        },
-        fail: function (err) {
-          console.log(err)
-        }
-      })
-      wx.onSocketOpen(function (res) {
-        console.log('WebSocket连接已打开！')
-      })
-      wx.onSocketError(function (err) {
-        console.log('WebSocket连接打开失败，请检查！')
-        getLatest().then(res => {
-          console.log('getLatest', res)
-          self.handleData(res.data)
-        })
-        // if (res.code === 0) {
-        //
-        // } else {
-        //   console.log(res.msg)
-        // }
-      })
+      // wx.connectSocket({
+      //   url: 'wss://jewelry.timovips.com/webSocketServer',
+      //   data:{
+      //   },
+      //   header:{
+      //     'content-type': 'application/x-www-form-urlencoded'
+      //   },
+      //   method: "POST",
+      //   success: async function (res) {
+      //     // getLatest
+      //     console.log(res)
+      //     // await getLatest({
+      //     //   query: {
+      //     //   },
+      //     //   type: 'GET'
+      //     // })
+      //   },
+      //   fail: function (err) {
+      //     console.log(err)
+      //   }
+      // })
+      // wx.onSocketOpen(function (res) {
+      //   console.log('WebSocket连接已打开！')
+      // })
+      // wx.onSocketError(function (err) {
+      //   console.log('WebSocket连接打开失败，请检查！')
+      //   // getLatest().then(res => {
+      //   //   console.log('getLatest', res)
+      //   //   self.handleData(res.data)
+      //   // })
+      // })
     }
     _getAd () {
       getAd({type: '1'}).then(res => {
         if (res.code === 0 && res.data) {
           const adUrl = imgUrl + JSON.parse(res.data.imgurl)[0].fileUrl
           this.adUrl = adUrl
+        } else {
+          tip.error(res.msg)
         }
       })
     }

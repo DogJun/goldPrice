@@ -86,7 +86,7 @@
       <!-- </form> -->
     </view>
     <view class="price">
-      <text class="price-num">266.34</text>
+      <text class="price-num">{{price}}</text>
       <text class="price-desc">实时金价（元/克）</text>
     </view>
     <form bindsubmit="formSubmit" report-submit>
@@ -111,9 +111,16 @@
 <script>
   import wepy from 'wepy'
   import { saveRemind } from '@/request/api'
+  import { connect } from 'wepy-redux'
   import tip from '@/utils/tip'
 
   const thirdSessionKey = wx.getStorageSync('threeSessionKey')
+
+  @connect({
+    priceList (state) {
+      return state.getPrice.priceList
+    }
+  })
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: '提醒'
@@ -191,7 +198,9 @@
             'pushcode': ''
           }
         }
-      ]
+      ],
+      price: '',
+      priceArr: []
     }
     computed = {
     }
@@ -234,7 +243,8 @@
         this.down = this.types[index].down.price
         // 更改当前页面索引
         this.currentIndex = index
-        this.$apply()
+        this.price = this.priceArr[this.currentIndex]
+        // this.$apply()
       },
       submit () {
         console.log('submit')
@@ -263,6 +273,7 @@
           list: JSON.stringify(list)
         }).then((res) => {
           if (res.code === 0) {
+            tip.success('保存成功')
             console.log(res)
           } else {
             tip.error(res.msg)
@@ -273,6 +284,8 @@
     events = {
     }
     onLoad() {
+      this.priceArr = [this.priceList.goldSale, this.priceList.byGoldSale, this.priceList.bjGoldSale, this.priceList.hkGoldSale, this.priceList.londonGoldSale]
+      this.price = this.priceArr[this.currentIndex]
     }
   }
 </script>

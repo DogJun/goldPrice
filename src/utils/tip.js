@@ -9,7 +9,7 @@ export default class Tips {
    * 弹出提示框
    */
 
-  static success(title, duration = 500) {
+  static success(title, duration = 1000) {
     setTimeout(() => {
       wx.showToast({
         title: title,
