@@ -111,6 +111,7 @@
 <script>
   import wepy from 'wepy'
   import { saveRemind } from '@/request/api'
+  import tip from '@/utils/tip'
 
   const thirdSessionKey = wx.getStorageSync('threeSessionKey')
   export default class Index extends wepy.page {
