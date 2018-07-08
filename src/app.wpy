@@ -107,7 +107,10 @@ export default class extends wepy.app {
   async login () {
     try {
       let {code: code} = await wepy.login()
-      let loginData = { code: code }
+      let loginData = {
+        code: code,
+        threeSessionKey: wx.getStorageSync('threeSessionKey') || ''
+      }
       console.log(loginData)
       login(loginData).then(res => {
         console.log('登陆后返回的数据', res)

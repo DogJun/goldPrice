@@ -125,8 +125,22 @@
       }
     }
     _getSubscribe () {
+      let self = this
       getSubscribe({thirdSessionKey: wx.getStorageSync('threeSessionKey')}).then(res => {
-        console.log(res)
+        if (res.code === 0) {
+          console.log(res.data)
+          for (let i = 0; i < res.data.length; i++) {
+            for (let j = 0; j < self.dates.length; j++) {
+              if (res.data[i].subtime === self.dates[j].time) {
+                self.dates[j].active = true
+                self.dates[j].pushCode = res.data[i].pushcode
+              }
+            }
+          }
+          self.$apply()
+        } else {
+          tip.error(res.msg)
+        }
       })
     }
     events = {
