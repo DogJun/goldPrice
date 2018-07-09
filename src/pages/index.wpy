@@ -89,7 +89,7 @@
       </view>
       <view class="header-right">
         <text class="time">{{time}}</text>
-        <text class="txt">{{timeRange(OPENSTART, OPENEND) ? '收盘' : '开盘'}}</text>
+        <text class="txt">{{ isTimeRange ? '收盘' : '开盘'}}</text>
       </view>
     </view>
     <view class="table">
@@ -154,7 +154,8 @@
       time: '',
       timeId: null,
       listData: [],
-      adUrl: ''
+      adUrl: '',
+      isTimeRange: timeRange(OPENSTART, OPENEND)
     }
     computed = {}
     methods = {}
