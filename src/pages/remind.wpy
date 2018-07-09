@@ -110,7 +110,7 @@
 
 <script>
   import wepy from 'wepy'
-  import { saveRemind } from '@/request/api'
+  import { getRemind, saveRemind } from '@/request/api'
   import { connect } from 'wepy-redux'
   import tip from '@/utils/tip'
 
@@ -126,6 +126,7 @@
       navigationBarTitleText: '提醒'
     }
     components = {
+
 
     }
     data = {
@@ -269,7 +270,7 @@
         })
         console.log(list)
         saveRemind({
-          thirdSessionKey,
+          thirdSessionKey: wx.getStorageSync('threeSessionKey'),
           list: JSON.stringify(list)
         }).then((res) => {
           if (res.code === 0) {
@@ -284,8 +285,77 @@
     events = {
     }
     onLoad() {
+      // 获取信息
+      this._getRemind()
       this.priceArr = [this.priceList.goldSale, this.priceList.byGoldSale, this.priceList.bjGoldSale, this.priceList.hkGoldSale, this.priceList.londonGoldSale]
       this.price = this.priceArr[this.currentIndex]
+    }
+    _getRemind () {
+      let self = this
+      console.log('获取提醒thirdSessionKey', thirdSessionKey)
+      getRemind({
+        thirdSessionKey: wx.getStorageSync('threeSessionKey')
+      }).then(res => {
+        if (res.code === 0) {
+          console.log(res.data)
+          let len = res.data.length
+          if (len > 0) {
+            for (let i = 0; i < len; i ++) {
+              let type = res.data[i].type
+              let change = res.data[i].change
+              if (type === 'gold') {
+                if (change === '1') {
+                  this.types[0].up.price = res.data[i].price
+                  this.types[0].up.pushcode = res.data[i].pushcode
+                } else if (change === '-1') {
+                  this.types[0].down.price = res.data[i].price
+                  this.types[0].down.pushcode = res.data[i].pushcode
+                }
+              } else if (type === 'byGold') {
+                if (change === '1') {
+                  this.types[1].up.price = res.data[i].price
+                  this.types[1].up.pushcode = res.data[i].pushcode
+                } else if (change === '-1') {
+                  this.types[1].down.price = res.data[i].price
+                  this.types[1].down.pushcode = res.data[i].pushcode
+                }
+              } else if (type === 'bjGold') {
+                if (change === '1') {
+                  this.types[2].up.price = res.data[i].price
+                  this.types[2].up.pushcode = res.data[i].pushcode
+                } else if (change === '-1') {
+                  this.types[2].down.price = res.data[i].price
+                  this.types[2].down.pushcode = res.data[i].pushcode
+                }
+              } else if (type === 'hkGold') {
+                if (change === '1') {
+                  this.types[3].up.price = res.data[i].price
+                  this.types[3].up.pushcode = res.data[i].pushcode
+                } else if (change === '-1') {
+                  this.types[3].down.price = res.data[i].price
+                  this.types[3].down.pushcode = res.data[i].pushcode
+                }
+              } else if (type === 'londonGold') {
+                if (change === '1') {
+                  this.types[4].up.price = res.data[i].price
+                  this.types[4].up.pushcode = res.data[i].pushcode
+                } else if (change === '-1') {
+                  this.types[4].down.price = res.data[i].price
+                  this.types[4].down.pushcode = res.data[i].pushcode
+                }
+              } else {
+                tip.error('未知的金属类型')
+              }
+            }
+            self.$apply()
+            self.up = self.types[0].up.price
+            self.down = self.types[0].down.price
+            self.$apply()
+          }
+        } else {
+          tip.error(res.msg)
+        }
+      })
     }
   }
 </script>

@@ -172,42 +172,43 @@
         self.time = t
         self.$apply()
       }, 1000)
-      this._getAd()
-      this.methods.getPrice().then(res => {
-        this.handleData(this.priceList)
-      })
+      // 获取广告位信息
+      self._getAd()
       // 建立websocket连接
-      // wx.connectSocket({
-      //   url: 'wss://jewelry.timovips.com/webSocketServer',
-      //   data:{
-      //   },
-      //   header:{
-      //     'content-type': 'application/x-www-form-urlencoded'
-      //   },
-      //   method: "POST",
-      //   success: async function (res) {
-      //     // getLatest
-      //     console.log(res)
-      //     // await getLatest({
-      //     //   query: {
-      //     //   },
-      //     //   type: 'GET'
-      //     // })
-      //   },
-      //   fail: function (err) {
-      //     console.log(err)
-      //   }
-      // })
-      // wx.onSocketOpen(function (res) {
-      //   console.log('WebSocket连接已打开！')
-      // })
-      // wx.onSocketError(function (err) {
-      //   console.log('WebSocket连接打开失败，请检查！')
-      //   // getLatest().then(res => {
-      //   //   console.log('getLatest', res)
-      //   //   self.handleData(res.data)
-      //   // })
-      // })
+      wx.connectSocket({
+        url: 'wss://jewelry.timovips.com/webSocketServer',
+        data:{
+        },
+        header:{
+          'content-type': 'application/x-www-form-urlencoded'
+        },
+        method: "POST",
+        success: async function (res) {
+          // getLatest
+          console.log(res)
+          // await getLatest({
+          //   query: {
+          //   },
+          //   type: 'GET'
+          // })
+        },
+        fail: function (err) {
+          console.log(err)
+        }
+      })
+      wx.onSocketOpen(function (res) {
+        console.log('WebSocket连接已打开！')
+      })
+      wx.onSocketError(function (err) {
+        console.log('WebSocket连接打开失败，请检查！')
+        // getLatest().then(res => {
+        //   console.log('getLatest', res)
+        //   self.handleData(res.data)
+        // })
+        self.methods.getPrice().then(res => {
+          self.handleData(self.priceList)
+        })
+      })
     }
     _getAd () {
       getAd({type: '1'}).then(res => {
