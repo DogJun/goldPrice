@@ -133,7 +133,7 @@
   import wepy from 'wepy'
   import { OPENSTART, OPENEND } from '../config/index'
   import { addZeros, timeRange } from '../utils/index'
-  import { getAd, getLatest, imgUrl } from '@/request/api'
+  import { getAd, getLatest, imgUrl, subscribe } from '@/request/api'
   import tip from '@/utils/tip'
   import { connect } from 'wepy-redux'
   import * as actions from '@/store/actions/getPrice'
@@ -174,42 +174,98 @@
       }, 1000)
       // 获取广告位信息
       self._getAd()
+      getLatest().then(res => {
+        console.log('getLatest', res)
+        self.handleData(res.data)
+      })
+      self.initSocket()
       // 建立websocket连接
-      wx.connectSocket({
-        url: 'wss://jewelry.timovips.com/webSocketServer',
-        data:{
-        },
-        header:{
-          'content-type': 'application/x-www-form-urlencoded'
-        },
-        method: "POST",
-        success: async function (res) {
-          // getLatest
-          console.log(res)
-          // await getLatest({
-          //   query: {
-          //   },
-          //   type: 'GET'
-          // })
-        },
-        fail: function (err) {
-          console.log(err)
+      // wx.connectSocket({
+      //   url: 'wss://jewelry.timovips.com/webSocketServer',
+      //   data:{
+      //   },
+      //   header:{
+      //     'content-type': 'application/x-www-form-urlencoded'
+      //   },
+      //   method: "POST",
+      //   success: async function (res) {
+      //     // getLatest
+      //     console.log(res)
+      //     // await getLatest({
+      //     //   query: {
+      //     //   },
+      //     //   type: 'GET'
+      //     // })
+      //   },
+      //   fail: function (err) {
+      //     console.log(err)
+      //   }
+      // })
+      // wx.onSocketOpen(function (res) {
+      //   console.log('WebSocket连接已打开！')
+      //   // subscribe().then(res => {
+      //   //   console.log(res)
+      //   // })
+      //   wx.sendSocketMessage({
+      //     data: 'hello'
+      //   })
+      // })
+      // wx.onSocketMessage(function(res) {
+      //   console.log('收到服务器内容：', res.data)
+      // })
+      // wx.onSocketError(function (err) {
+      //   console.log('WebSocket连接打开失败，请检查！')
+      //   // getLatest().then(res => {
+      //   //   console.log('getLatest', res)
+      //   //   self.handleData(res.data)
+      //   // })
+      //   self.methods.getPrice().then(res => {
+      //     self.handleData(self.priceList)
+      //   })
+      // })
+    }
+    initSocket () {
+      let self = this
+      let socketOpen = false
+      function sendSocketMessage(msg) {
+        console.log('send msg:', msg)
+        if (socketOpen) {
+          wx.sendSocketMessage({
+            data: msg
+          })
+        } else {
+          socketMsgQueue.push(msg)
         }
+      }
+      let ws = {
+        send: sendSocketMessage
+      }
+      wx.connectSocket({
+        url: 'wss://jewelry.timovips.com/webSocketServer'
       })
       wx.onSocketOpen(function (res) {
-        console.log('WebSocket连接已打开！')
+        socketOpen = true
+        ws.onopen()
       })
-      wx.onSocketError(function (err) {
-        console.log('WebSocket连接打开失败，请检查！')
-        // getLatest().then(res => {
-        //   console.log('getLatest', res)
-        //   self.handleData(res.data)
-        // })
-        self.methods.getPrice().then(res => {
-          self.handleData(self.priceList)
+
+      wx.onSocketMessage(function (res) {
+        ws.onmessage(res)
+      })
+
+      let Stomp = require('../utils/stomp.js').Stomp
+      Stomp.setInterval = function () { }
+      Stomp.clearInterval = function () { }
+      let stompClient = Stomp.over(ws)
+
+      stompClient.connect({}, function (sessionId) {
+        stompClient.subscribe('/topic/subscribeLatest', function (res) {
+          console.log('From MQ:', JSON.parse(res.body).data)
+          self.handleData(JSON.parse(res.body).data)
         })
       })
+
     }
+
     _getAd () {
       getAd({type: '1'}).then(res => {
         if (res.code === 0 && res.data) {

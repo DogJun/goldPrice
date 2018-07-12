@@ -16,3 +16,6 @@ export const getLatest = (data = {}, options = {}) => request.get(baseUrl + '/ge
 export const getRemind = (data = {}, options = {}) => request.post(baseUrl + '/getRemind', data, options)
 // 保存贵金属提醒
 export const saveRemind = (data = {}, options = {}) => request.post(baseUrl + '/saveRemind', data, options)
+// 订阅
+export const subscribe = (data = {}, options = {}) => request.post('https://jewelry.timovips.com/topic/subscribeLatest', data, options)
+
