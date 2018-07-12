@@ -174,9 +174,8 @@
       }, 1000)
       // 获取广告位信息
       self._getAd()
-      getLatest().then(res => {
-        console.log('getLatest', res)
-        self.handleData(res.data)
+      self.methods.getPrice().then(res => {
+        self.handleData(self.priceList)
       })
       self.initSocket()
       // 建立websocket连接
