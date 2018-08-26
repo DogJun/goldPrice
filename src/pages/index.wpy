@@ -158,7 +158,25 @@
       isTimeRange: timeRange(OPENSTART, OPENEND)
     }
     computed = {}
-    methods = {}
+    methods = {
+      // 分享
+      onShareAppMessage: function(res) {
+        if (res.from === 'button') {
+          // 来自页面内转发按钮
+          console.log(res.target)
+        }
+        return {
+          title: '一周金价',
+          path: 'pages/index',
+          success: function(res) {
+            // 转发成功
+          },
+          fail: function(res) {
+            // 转发失败
+          }
+        }
+      }
+    }
     events = {}
     onLoad () {
       let self = this
@@ -276,7 +294,6 @@
       })
     }
     handleData (data) {
-      console.log(data)
       let result = [
         {
           'type': '黄金',
